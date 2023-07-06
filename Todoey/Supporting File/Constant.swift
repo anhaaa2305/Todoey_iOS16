@@ -6,8 +6,15 @@
 import Foundation
 
 struct K {
-    static let identifierItemCell = "ToDoItemCell"
     static let alertTitle = "Add new Todoey Item"
     static let actionTitle = "Add Item"
     static let defaultKey = "toDoListArray"
+    
+    struct identifier {
+        static let CateToItem = "CategoryToListItem"
+    }
+    struct tableViewCell {
+        static let identifierItemCell = "ToDoItemCell"
+        static let categoryCell = "CategoryCell"
+    }
 }

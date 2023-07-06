@@ -15,7 +15,7 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        print("Item Database: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
         // Do any additional setup after loading the view.
         /*
          let newItem = Item()
@@ -44,8 +44,8 @@ class ToDoListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.identifierItemCell, for: indexPath)       // Choose the object with default identify
-        cell.textLabel?.text = itemArray[indexPath.row].title // Set text to the Cell
+        let itemCell = tableView.dequeueReusableCell(withIdentifier: K.tableViewCell.identifierItemCell, for: indexPath)       // Choose the object with default identify
+        itemCell.textLabel?.text = itemArray[indexPath.row].title // Set text to the Cell
         
         // Set the Checkmark
         /*
@@ -55,14 +55,13 @@ class ToDoListViewController: UITableViewController {
          cell.accessoryType = .none
          }
          */
-        cell.accessoryType = itemArray[indexPath.row].done ? .checkmark : .none    // Change for the line 44 to 49
-        return cell
+        itemCell.accessoryType = itemArray[indexPath.row].done ? .checkmark : .none    // Change for the line 44 to 49
+        return itemCell
     }
     
     // MARK: - Table View Delegate Method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print(itemArray[indexPath.row]) // get text
-        
         /*
          if itemArray[indexPath.row].done == false {
          itemArray[indexPath.row].done = true
@@ -73,8 +72,6 @@ class ToDoListViewController: UITableViewController {
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done // Change for the line 57 to 62
         tableView.reloadData()       // Reload Data in Delegate Method to DataSource
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        
         // Delete Item:
         /*
         context.delete(itemArray[indexPath.row])
@@ -116,10 +113,10 @@ class ToDoListViewController: UITableViewController {
              try dataEncoder.write(to: dataFilePath!)         // Write to Todoey_Item.plist
              */
             try context.save()
-            print("Completed save data")
+            print("Completed save Item data")
         } catch {
             //print("Error encoding item array \(error)")
-            print("Error saving data into Context: \(error)")
+            print("Error saving Item data into CoreData: \(error)")
         }
         self.tableView.reloadData()
     }
@@ -128,7 +125,7 @@ class ToDoListViewController: UITableViewController {
         do {
             itemArray = try context.fetch(request)
         } catch {
-            print("Error fetching data from Context: \(error)")
+            print("Error fetching Item data from CoreData: \(error)")
         }
         self.tableView.reloadData()
     }
