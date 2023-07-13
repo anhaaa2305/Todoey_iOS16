@@ -7,6 +7,11 @@ class ToDoListViewController: UITableViewController {
     
     // MARK: - Global Variales
     var itemArray = [Item]()
+    var selectedCategory: Category? {
+        didSet {
+            loadItem() 
+        }
+    }
     //let defaults = UserDefaults.standard        // Set defaults with Standard   , we don't use UserDefaults => Comment defaults
     //let request: NSFetchRequest<Item> = Item.fetchRequest()
 

@@ -27,15 +27,18 @@ class CategoryTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let categoryCell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         categoryCell.textLabel?.text = categoryArray[indexPath.row].name
-        categoryCell.accessoryType = categoryArray[indexPath.row].check ? .checkmark : .none
         return categoryCell
     }
     
     // MARK: - Tableview Delegate Method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        categoryArray[indexPath.row].check = !categoryArray[indexPath.row].check
-        tableView.reloadData()
-        tableView.deselectRow(at: indexPath, animated: true)
+        performSegue(withIdentifier: K.identifier.CateToItem, sender: self)
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! ToDoListViewController
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+        }
     }
     // MARK: Add Category
     @IBAction func addCategoryPressed(_ sender: UIBarButtonItem) {
@@ -45,7 +48,6 @@ class CategoryTableViewController: UITableViewController {
             // Reload Data:
             let newCategory = Category(context: self.context)
             newCategory.name = textField.text!
-            newCategory.check = false
             self.categoryArray.append(newCategory)
             self.saveCategory()
         }
