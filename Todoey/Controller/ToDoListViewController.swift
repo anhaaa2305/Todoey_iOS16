@@ -43,8 +43,23 @@ class ToDoListViewController: UITableViewController {
     
     // MARK: - Table View Delegate Method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //print(itemArray[indexPath.row]) // get text
-        //todoItems[indexPath.row].done = !todoItems?[indexPath.row].done
+        
+        // Create model Updating data in Realm
+        if let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    if item.done == true {
+                        realm.delete(item)
+                    } else {
+                        item.done = !item.done
+
+                    }
+                }
+            } catch {
+                print("Error updating data Status \(error)")
+            }
+        }
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
         // Delete Item:
         /*
@@ -86,7 +101,6 @@ class ToDoListViewController: UITableViewController {
         
     }
     // MARK: CRUD Data
-    // Create Data into Todoey_Item.plist
     // Read Data from Todoey_Item.plist        // LoadITem
     func loadItem() {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title",ascending: true)
