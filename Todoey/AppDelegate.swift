@@ -13,7 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //print("The first path: \(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)")
         print ("Realm Database: \(Realm.Configuration.defaultConfiguration.fileURL!)")
         do {
-            let realm = try Realm()
+            _ = try Realm()
         } catch {
             print("Error initalising Realm Data\(error)")
         }

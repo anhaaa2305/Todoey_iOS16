@@ -7,7 +7,7 @@ import RealmSwift
 class ToDoListViewController: UITableViewController {
     // MARK: - Global Variales
     let realm = try! Realm()
-    var todoItems: Results<Item>?
+    var toDoItems: Results<Item>?
     var selectedCategory: Category? {
         didSet {
             loadItem()
@@ -19,22 +19,23 @@ class ToDoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = selectedCategory?.name
-        print("Item Database: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
-        loadItem()
+        navigationItem.title = selectedCategory?.name          // Set navigation title with Category
+        print("Item Database: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")  // Print the file Path
+        loadItem()           // Load Item
     }
     
     // MARK: - Table DataSource Methods
-    // Set dataSource
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todoItems?.count ?? 1  //Get the number of the List at row 9
+        return toDoItems?.count ?? 1  //Get the number of the List at row 9
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let itemCell = tableView.dequeueReusableCell(withIdentifier: K.tableViewCell.identifierItemCell, for: indexPath)       // Choose the object with default identify
-        if let item = todoItems?[indexPath.row] {
-            itemCell.textLabel?.text = item.title
-            itemCell.accessoryType = item.done ? .checkmark : .none    // Change for the line 44 to 49
+        
+        // Unwrap toDoItems
+        if let item = toDoItems?[indexPath.row] {
+            itemCell.textLabel?.text = item.title         // Set the text in the cell equal title of item
+            itemCell.accessoryType = item.done ? .checkmark : .none        // Set the type of the AccessoryType
         } else {
             itemCell.textLabel?.text  = "No Item added yet"
         }
@@ -43,16 +44,14 @@ class ToDoListViewController: UITableViewController {
     
     // MARK: - Table View Delegate Method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         // Create model Updating data in Realm
-        if let item = todoItems?[indexPath.row] {
+        if let item = toDoItems?[indexPath.row] {
             do {
                 try realm.write {
                     if item.done == true {
                         realm.delete(item)
                     } else {
-                        item.done = !item.done
-
+                        item.done = !item.done     // Check done Properties
                     }
                 }
             } catch {
@@ -61,11 +60,6 @@ class ToDoListViewController: UITableViewController {
         }
         tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
-        // Delete Item:
-        /*
-        context.delete(itemArray[indexPath.row])
-        itemArray.remove(at: indexPath.row)
-         */
     }
     
     // MARK: - Add Items Button:
@@ -79,6 +73,7 @@ class ToDoListViewController: UITableViewController {
                     try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
+                        newItem.dateCreated = Date()
                         currentCategory.items.append(newItem)
                     }
                 } catch {
@@ -98,35 +93,28 @@ class ToDoListViewController: UITableViewController {
     }
     // MARK: Refresh button
     @IBAction func refreshButton(_ sender: UIBarButtonItem) {
-        
+        loadItem()
     }
     // MARK: CRUD Data
     // Read Data from Todoey_Item.plist        // LoadITem
     func loadItem() {
-        todoItems = selectedCategory?.items.sorted(byKeyPath: "title",ascending: true)
+        toDoItems = selectedCategory?.items.sorted(byKeyPath: "title",ascending: true)
         tableView.reloadData()
     }
 }
 extension ToDoListViewController: UISearchBarDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate {
     // MARK: Setting for Search bar setting
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        /*
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        request.predicate = predicate
-        request.sortDescriptors  = [NSSortDescriptor(key: "title", ascending: true)]
-        loadItem(with: request, predicate: predicate)
-         */
+        toDoItems = toDoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated",ascending: true)
+        tableView.reloadData()
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        /*
         if searchBar.text?.count == 0 {
             loadItem()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
         }
-        DispatchQueue.main.async {
-            searchBar.resignFirstResponder()
-        }
-         */
     }
 }
 
