@@ -27,10 +27,10 @@
                             </connections>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ToDoItemCell" id="CfY-r5-Bwu">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="CfY-r5-Bwu" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
                                 <rect key="frame" x="0.0" y="94" width="414" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CfY-r5-Bwu" id="7YL-Vt-Wiy">
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CfY-r5-Bwu" id="7YL-Vt-Wiy" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
@@ -42,10 +42,10 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Items" largeTitleDisplayMode="always" id="imv-Rv-VzW">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="goforward" catalog="system" id="v9x-mA-P2T">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="chevron.backward" catalog="system" id="v9x-mA-P2T">
                             <color key="tintColor" systemColor="systemBlueColor"/>
                             <connections>
-                                <action selector="refreshButton:" destination="jPC-0N-8BF" id="yw3-XI-JAd"/>
+                                <action selector="backButtonPressed:" destination="jPC-0N-8BF" id="69n-2K-w8o"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="eVW-jZ-GP4">
@@ -63,23 +63,24 @@
         <!--Navigation Controller-->
         <scene sceneID="O26-jF-qmp">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C4m-ey-Nbl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dS6-V4-O7u" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="nq5-yC-fXj">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" systemColor="systemCyanColor"/>
+                        <color key="barTintColor" systemColor="tintColor"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
                         <segue destination="Cpr-KU-HQS" kind="relationship" relationship="rootViewController" id="xT7-4b-Nor"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="C4m-ey-Nbl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="354" y="-128"/>
         </scene>
-        <!--Todoey-->
+        <!--Category-->
         <scene sceneID="UDh-rE-XFR">
             <objects>
                 <tableViewController id="Cpr-KU-HQS" customClass="CategoryTableViewController" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
@@ -88,7 +89,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CategoryCell" id="tUc-Gz-cgj">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="tUc-Gz-cgj" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
                                 <rect key="frame" x="0.0" y="50" width="414" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tUc-Gz-cgj" id="dsc-0s-pq6">
@@ -105,7 +106,7 @@
                     <toolbarItems>
                         <barButtonItem title="Item" id="YxH-Sw-4jM"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="Todoey" id="9lc-zb-Suw">
+                    <navigationItem key="navigationItem" title="Category" leftItemsSupplementBackButton="YES" id="9lc-zb-Suw">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="EGB-Z0-llJ">
                             <connections>
                                 <action selector="addCategoryPressed:" destination="Cpr-KU-HQS" id="QCE-7Q-QbM"/>
@@ -123,7 +124,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="goforward" catalog="system" width="119" height="128"/>
+        <image name="chevron.backward" catalog="system" width="97" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
@@ -132,6 +133,9 @@
         </systemColor>
         <systemColor name="systemCyanColor">
             <color red="0.19607843137254902" green="0.67843137254901964" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tintColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

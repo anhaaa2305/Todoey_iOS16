@@ -14,7 +14,7 @@ struct K {
         static let CateToItem = "CategoryToListItem"
     }
     struct tableViewCell {
-        static let identifierItemCell = "ToDoItemCell"
-        static let categoryCell = "CategoryCell"
+        static let identifierItemCell = "Cell"
+        static let categoryCell = "Cell"
     }
 }

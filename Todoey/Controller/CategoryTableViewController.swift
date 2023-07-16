@@ -3,13 +3,13 @@
 //  Todoey
 //
 //  Created by 🤪😋😝Ronaldo👻👻👻 Ánh on 01/07/2023.
-//  Copyright © 2023 App Brewery. All rights reserved.
 //
 
 import UIKit
 import RealmSwift
-import CoreData
-class CategoryTableViewController: UITableViewController {
+import SwipeCellKit
+
+class CategoryTableViewController: SwipeViewController {
     
     // MARK: - Global Variables
     let realm = try! Realm()
@@ -19,6 +19,7 @@ class CategoryTableViewController: UITableViewController {
         super.viewDidLoad()
         print("Category Database:\(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
         loadCategory()
+        tableView.rowHeight = 80
     }
     
     // MARK: - Tableview Datasource Methods
@@ -27,11 +28,10 @@ class CategoryTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let categoryCell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let categoryCell = super.tableView(tableView, cellForRowAt: indexPath)
         categoryCell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
         return categoryCell
     }
-    
     // MARK: - Tableview Delegate Method
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: K.identifier.CateToItem, sender: self)
@@ -50,7 +50,6 @@ class CategoryTableViewController: UITableViewController {
             // Reload Data:
             let newCategory = Category()
             newCategory.name = textField.text!
-            
             self.saveCategory(category: newCategory)
         }
         // Add textfield:
@@ -62,7 +61,22 @@ class CategoryTableViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true,completion: nil)
     }
-
+    func notificationDeleted () {
+        // Khởi tạo UIAlertController
+        let alertController = UIAlertController(title: "Notification", message: "Completed Delete", preferredStyle: .alert)
+        // Khởi tạo hành động cho thông báo
+        let action = UIAlertAction(title: "Đóng", style: .default) { (_) in
+            alertController.dismiss(animated: true, completion: nil)
+        }
+        // Thêm hành động vào UIAlertController
+        alertController.addAction(action)
+        // Hiển thị UIAlertController
+        self.present(alertController, animated: true, completion: nil)
+        let timeForDelay = 5.0 // Thời gian đóng thông báo (đơn vị: giây)
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeForDelay) {
+            alertController.dismiss(animated: true, completion: nil)
+        }
+    }
     // MARK: - Data Manipulation 
     func saveCategory(category: Category) {
         do {
@@ -78,5 +92,18 @@ class CategoryTableViewController: UITableViewController {
     func loadCategory(){
         categories = realm.objects(Category.self)      // Fetch data from Realm
         tableView.reloadData()
+    }
+    override func updateModel(at indexPath: IndexPath){
+        super.updateModel(at: indexPath)
+        if let categoryForDeletion = categories?[indexPath.row] {
+            do {
+                try self.realm.write{
+                    self.realm.delete(categoryForDeletion)
+                    self.notificationDeleted()
+                }
+            } catch {
+                print("Error when delete data \(error)")
+            }
+        }
     }
 }
