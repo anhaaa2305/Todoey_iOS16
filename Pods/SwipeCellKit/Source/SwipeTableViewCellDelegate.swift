@@ -10,7 +10,7 @@ import UIKit
 /**
  The `SwipeTableViewCellDelegate` protocol is adopted by an object that manages the display of action buttons when the cell is swiped.
  */
-public protocol SwipeTableViewCellDelegate: AnyObject {
+public protocol SwipeTableViewCellDelegate: class {
     
     /**
      Asks the delegate for the actions to display in response to a swipe in the specified row.

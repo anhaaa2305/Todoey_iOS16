@@ -15,7 +15,7 @@
     NSUInteger count = containers.count;
     NSAssert(count <= 10, @"The count of containers greater than 10 is not supported.");
     
-    return [self appearanceWhenContainedInInstancesOfClasses:
+    return [self appearanceWhenContainedIn:
             count > 0 ? containers[0] : nil,
             count > 1 ? containers[1] : nil,
             count > 2 ? containers[2] : nil,

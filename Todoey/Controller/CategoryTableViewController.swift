@@ -1,13 +1,8 @@
-//
-//  CategoryTableViewController.swift
-//  Todoey
-//
-//  Created by 🤪😋😝Ronaldo👻👻👻 Ánh on 01/07/2023.
-//
 
 import UIKit
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 
 class CategoryTableViewController: SwipeViewController {
     
@@ -18,18 +13,21 @@ class CategoryTableViewController: SwipeViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Category Database:\(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")
-        loadCategory()
         tableView.rowHeight = 80
+        tableView.separatorStyle = .none
+        loadCategory()
     }
-    
     // MARK: - Tableview Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories?.count ?? 1      // If categories?.count is nil, return 1
     }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let categoryCell = super.tableView(tableView, cellForRowAt: indexPath)
-        categoryCell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
+        if let categoryColor = categories?[indexPath.row] {
+            categoryCell.textLabel?.text = categoryColor.name
+            categoryCell.backgroundColor = UIColor(hexString: categoryColor.colour)
+            categoryCell.textLabel?.textColor = ContrastColorOf(UIColor(hexString: categoryColor.colour)!, returnFlat: true)
+        }
         return categoryCell
     }
     // MARK: - Tableview Delegate Method
@@ -50,6 +48,7 @@ class CategoryTableViewController: SwipeViewController {
             // Reload Data:
             let newCategory = Category()
             newCategory.name = textField.text!
+            newCategory.colour = UIColor.randomFlat().hexValue()
             self.saveCategory(category: newCategory)
         }
         // Add textfield:
@@ -103,6 +102,21 @@ class CategoryTableViewController: SwipeViewController {
                 }
             } catch {
                 print("Error when delete data \(error)")
+            }
+        }
+    }
+}
+// MARK: Setting for Search bar setting
+extension CategoryTableViewController: UISearchBarDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        categories = categories?.filter("name CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "name",ascending: true)
+        tableView.reloadData()
+    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadCategory()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
             }
         }
     }

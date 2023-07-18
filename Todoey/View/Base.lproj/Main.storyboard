@@ -63,7 +63,6 @@
         <!--Navigation Controller-->
         <scene sceneID="O26-jF-qmp">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="C4m-ey-Nbl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dS6-V4-O7u" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="nq5-yC-fXj">
@@ -77,6 +76,7 @@
                         <segue destination="Cpr-KU-HQS" kind="relationship" relationship="rootViewController" id="xT7-4b-Nor"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C4m-ey-Nbl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="354" y="-128"/>
         </scene>
@@ -88,9 +88,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" id="yez-TP-iU9">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="Cpr-KU-HQS" id="EtF-mR-fC2"/>
+                            </connections>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="tUc-Gz-cgj" customClass="SwipeTableViewCell" customModule="SwipeCellKit">
-                                <rect key="frame" x="0.0" y="50" width="414" height="43.666667938232422"/>
+                                <rect key="frame" x="0.0" y="94" width="414" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tUc-Gz-cgj" id="dsc-0s-pq6">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.666667938232422"/>

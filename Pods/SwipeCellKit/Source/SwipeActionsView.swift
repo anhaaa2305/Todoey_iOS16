@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol SwipeActionsViewDelegate: AnyObject {
+protocol SwipeActionsViewDelegate: class {
     func swipeActionsView(_ swipeActionsView: SwipeActionsView, didSelect action: SwipeAction)
 }
 

@@ -1,9 +1,8 @@
-//
-//  ViewController.swift
-//  Todoey
+
 import UIKit
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 
 class ToDoListViewController: SwipeViewController {
     // MARK: - Global Variales
@@ -19,6 +18,7 @@ class ToDoListViewController: SwipeViewController {
         navigationItem.title = selectedCategory?.name          // Set navigation title with Category
         print("Item Database: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))")  // Print the file Path
         tableView.rowHeight = 80
+        tableView.separatorStyle = .none
         loadItem()
     }
     // MARK: - Table DataSource Methods
@@ -26,15 +26,19 @@ class ToDoListViewController: SwipeViewController {
         return toDoItems?.count ?? 1  //Get the number of the List at row 9
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let itemCell = super.tableView(tableView, cellForRowAt: indexPath)      // Choose the object with default identify
-        // Unwrap toDoItems
-        if let item = toDoItems?[indexPath.row] {
-            itemCell.textLabel?.text = item.title         // Set the text in the cell equal title of item
+        let itemCell = super.tableView(tableView, cellForRowAt: indexPath)
+        if let item = toDoItems?[indexPath.row], let colourOfCategory = selectedCategory?.colour  {
+            itemCell.textLabel?.text = item.title
             /*
-               Ternary operator =>
+             Ternary operator =>
              Value = Condition ? valueIfTrue : valueIfFalse
              */
             itemCell.accessoryType = item.done ? .checkmark : .none        // Set the type of the AccessoryType
+            let percentTageForDarken = CGFloat(indexPath.row) / CGFloat(toDoItems?.count ?? 1)    // Chỉnh percentTage để giảm độ sáng của màu.
+            if let colour = UIColor(hexString: colourOfCategory)!.darken(byPercentage: percentTageForDarken) {
+                itemCell.backgroundColor = colour
+                itemCell.textLabel?.textColor = ContrastColorOf(colour, returnFlat: true)
+            }
         } else {
             itemCell.textLabel?.text  = "No Item added yet"
         }
@@ -86,19 +90,19 @@ class ToDoListViewController: SwipeViewController {
     }
     // MARK: Thông báo xoá lỗi
     func showSimpleAlert() {
-           // Khởi tạo UIAlertController
-           let alertController = UIAlertController(title: "Item chưa được hoàn thành", message: "Nếu bạn vẫn muốn xoá, vui lòng ấn nút đóng ", preferredStyle: .alert)
-           // Khởi tạo hành động cho thông báo
-           let action = UIAlertAction(title: "Đóng", style: .default) { (_) in
-               // Hành động khi người dùng chọn "Đóng"
-               self.dismiss(animated: true,completion: nil)
-           }
-           // Thêm hành động vào UIAlertController
-           alertController.addAction(action)
-           // Hiển thị UIAlertController
-           self.present(alertController, animated: true, completion: nil)
-            
-       }
+        // Khởi tạo UIAlertController
+        let alertController = UIAlertController(title: "Item chưa được hoàn thành", message: "Nếu bạn vẫn muốn xoá, vui lòng ấn nút đóng ", preferredStyle: .alert)
+        // Khởi tạo hành động cho thông báo
+        let action = UIAlertAction(title: "Đóng", style: .default) { (_) in
+            // Hành động khi người dùng chọn "Đóng"
+            self.dismiss(animated: true,completion: nil)
+        }
+        // Thêm hành động vào UIAlertController
+        alertController.addAction(action)
+        // Hiển thị UIAlertController
+        self.present(alertController, animated: true, completion: nil)
+        
+    }
     // MARK: Back button
     
     @IBAction func backButtonPressed(_ sender: UIBarButtonItem) {
@@ -114,12 +118,13 @@ class ToDoListViewController: SwipeViewController {
         super.updateModel(at: indexPath)
         if let itemForDeletion = toDoItems?[indexPath.row] {
             do {
-                if itemForDeletion.done == true {
-                    try self.realm.write {
+                try self.realm.write {
+                    if itemForDeletion.done == true {
                         self.realm.delete(itemForDeletion)
                     }
-                } else {
-                    self.realm.delete(itemForDeletion)
+                    else {
+                        self.realm.delete(itemForDeletion)
+                    }
                 }
             } catch {
                 print("Error when Delete Item\(error)")
@@ -128,8 +133,8 @@ class ToDoListViewController: SwipeViewController {
     }
 }
 
+// MARK: Setting for Search bar setting
 extension ToDoListViewController: UISearchBarDelegate,UIImagePickerControllerDelegate,UIPickerViewDelegate {
-    // MARK: Setting for Search bar setting
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         toDoItems = toDoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated",ascending: true)
         tableView.reloadData()

@@ -12,7 +12,6 @@ import SwipeCellKit
 class SwipeViewController: UITableViewController, SwipeTableViewCellDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
@@ -36,6 +35,5 @@ class SwipeViewController: UITableViewController, SwipeTableViewCellDelegate {
         return options
     }
     func updateModel(at indexPath: IndexPath) {
-       
     }
 }
